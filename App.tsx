@@ -51,20 +51,6 @@ const App: React.FC = () => {
     setIsCheckingAuth(false);
   };
 
-  // 認証チェック中は何も表示しない
-  if (isCheckingAuth) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 font-sans flex items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
-  }
-
-  // 認証されていない場合は認証フォームを表示
-  if (!isAuthenticated) {
-    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
-  }
-
   const startCamera = useCallback(async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({ 
@@ -142,6 +128,20 @@ const App: React.FC = () => {
       setIsLoading(false);
     }
   };
+
+  // 認証チェック中は何も表示しない
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 font-sans flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // 認証されていない場合は認証フォームを表示
+  if (!isAuthenticated) {
+    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 font-sans">
