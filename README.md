@@ -17,9 +17,16 @@ View your app in AI Studio: https://ai.studio/apps/drive/1hl64h23js6_Ztxo_5cUa-R
    npm install
    ```
 
-2. `.env.local` ファイルを作成し、`GEMINI_API_KEY` を設定:
+2. `.env.local` ファイルを作成し、以下の環境変数を設定:
    ```
    GEMINI_API_KEY=your_api_key_here
+   VITE_AUTH_USERNAME=admin
+   VITE_AUTH_PASSWORD_HASH=your_password_hash_here
+   ```
+   
+   パスワードのハッシュ値は以下のコマンドで生成できます:
+   ```bash
+   node scripts/generate-password-hash.js <あなたのパスワード>
    ```
 
 3. アプリを起動:
@@ -62,9 +69,29 @@ git push -u origin main
 ### 3. GitHub Secretsの設定
 
 1. GitHubリポジトリのページで「Settings」→「Secrets and variables」→「Actions」を開く
-2. 「New repository secret」をクリック
-3. Name: `GEMINI_API_KEY`、Value: あなたのGemini APIキーを入力
-4. 「Add secret」をクリック
+2. 以下のSecretsを追加:
+   
+   **GEMINI_API_KEY**
+   - 「New repository secret」をクリック
+   - Name: `GEMINI_API_KEY`
+   - Value: あなたのGemini APIキーを入力
+   - 「Add secret」をクリック
+   
+   **VITE_AUTH_USERNAME** (認証用のユーザー名)
+   - 「New repository secret」をクリック
+   - Name: `VITE_AUTH_USERNAME`
+   - Value: 認証に使用するユーザー名（例: `admin`）
+   - 「Add secret」をクリック
+   
+   **VITE_AUTH_PASSWORD_HASH** (認証用のパスワードハッシュ)
+   - パスワードのハッシュ値を生成:
+     ```bash
+     node scripts/generate-password-hash.js <あなたのパスワード>
+     ```
+   - 「New repository secret」をクリック
+   - Name: `VITE_AUTH_PASSWORD_HASH`
+   - Value: 生成されたハッシュ値を入力
+   - 「Add secret」をクリック
 
 ### 4. GitHub Pagesの有効化
 
@@ -82,6 +109,7 @@ git push -u origin main
 ### 注意事項
 
 - **APIキーのセキュリティ**: GitHub Pagesは静的サイトホスティングのため、APIキーはクライアント側に公開されます。本番環境では、バックエンドAPIを経由してAPIキーを保護することを推奨します。
+- **認証について**: このアプリにはクライアントサイドのベーシック認証が実装されています。IDとパスワードを入力しないとサイトにアクセスできません。ただし、これは完全なセキュリティ対策ではありません（JavaScriptで実装されているため、ソースコードを確認すれば認証情報が見える可能性があります）。より強固なセキュリティが必要な場合は、バックエンドAPIや認証サービスを使用してください。
 - **HTTPS必須**: カメラ機能を使用するには、HTTPS接続が必要です。GitHub Pagesは自動的にHTTPSを提供します。
 - **スマホでのアクセス**: 公開URLにスマホのブラウザからアクセスすると、カメラ機能が使用できます。
 

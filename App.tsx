@@ -1,11 +1,14 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { ArtInfo } from './types';
 import { getArtInfo } from './services/geminiService';
 import { CameraIcon } from './components/CameraIcon';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { CameraOffIcon } from './components/CameraOffIcon';
+import { AuthForm } from './components/AuthForm';
 
 const App: React.FC = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [artInfo, setArtInfo] = useState<ArtInfo | null>(null);
@@ -15,6 +18,51 @@ const App: React.FC = () => {
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // 認証状態をチェック
+  useEffect(() => {
+    const checkAuth = () => {
+      const authenticated = sessionStorage.getItem('artlens_authenticated') === 'true';
+      const authTime = sessionStorage.getItem('artlens_auth_time');
+      
+      // セッションが24時間以内かチェック（オプション）
+      if (authenticated && authTime) {
+        const timeDiff = Date.now() - parseInt(authTime, 10);
+        const hours24 = 24 * 60 * 60 * 1000;
+        if (timeDiff > hours24) {
+          // 24時間経過したら認証を無効化
+          sessionStorage.removeItem('artlens_authenticated');
+          sessionStorage.removeItem('artlens_auth_time');
+          setIsAuthenticated(false);
+        } else {
+          setIsAuthenticated(true);
+        }
+      } else {
+        setIsAuthenticated(false);
+      }
+      setIsCheckingAuth(false);
+    };
+
+    checkAuth();
+  }, []);
+
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  // 認証チェック中は何も表示しない
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-100 font-sans flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  // 認証されていない場合は認証フォームを表示
+  if (!isAuthenticated) {
+    return <AuthForm onAuthSuccess={handleAuthSuccess} />;
+  }
 
   const startCamera = useCallback(async () => {
     try {

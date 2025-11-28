@@ -34,6 +34,8 @@ jobs:
       - name: Build
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          VITE_AUTH_USERNAME: ${{ secrets.VITE_AUTH_USERNAME }}
+          VITE_AUTH_PASSWORD_HASH: ${{ secrets.VITE_AUTH_PASSWORD_HASH }}
         run: |
           VITE_BASE_PATH=/${{ github.event.repository.name }}/ npm run build
 
