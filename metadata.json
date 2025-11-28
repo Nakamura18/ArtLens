@@ -1,0 +1,7 @@
+{
+  "name": "ArtLens AI",
+  "description": "An application that uses your camera to identify paintings and provide detailed information about the artwork, the artist, and its historical context.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
