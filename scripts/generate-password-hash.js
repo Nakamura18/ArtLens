@@ -1,7 +1,7 @@
 // パスワードのハッシュ値を生成するヘルパースクリプト
 // 使用方法: node scripts/generate-password-hash.js <パスワード>
 
-const crypto = require('crypto');
+import crypto from 'crypto';
 
 const password = process.argv[2];
 

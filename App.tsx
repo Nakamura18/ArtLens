@@ -48,6 +48,7 @@ const App: React.FC = () => {
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
+    setIsCheckingAuth(false);
   };
 
   // 認証チェック中は何も表示しない
